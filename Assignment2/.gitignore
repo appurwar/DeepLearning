@@ -1,2 +1,3 @@
 cifar10-hw2/
 cifar10_convnet_model/
+*.csv
