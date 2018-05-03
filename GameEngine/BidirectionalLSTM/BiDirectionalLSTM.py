@@ -6,15 +6,20 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import keras.backend as K
 
+
+#changes action to one hot encoding
 def _np_one_hot(x, n):  # x - no. of examples, # n - Dimension of one hot
     y = np.zeros([len(x), n])
     y[np.arange(len(x)), x] = 1
     return y
 
+
+#multiplicative interaction of action and images
 def multiplyAction(images, actions):
     images = tf.multiply(actions, images)
     return images
 
+#deconv layer keras
 def func(am):
     this_func_list = []
     for i in range(0, nt):
@@ -23,7 +28,8 @@ def func(am):
     return K.stack(this_func_list, axis = 1)
 
 data = gs.load_data()
-nt = 8
+nt = 8 # sequence length of bidirectional lstm
+#model
 train_data = Input(shape=(nt, 80, 80, 3))
 actions = Input(shape=(nt, 6))
 act_reshape = Reshape((nt*6,), input_shape = (nt,6))(actions)
@@ -39,6 +45,7 @@ model = Model(inputs=[train_data, actions], outputs=OUT)
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
+#train
 q = 1
 for i in range(0, len(data)):  # 1 game point
     if q % 20 == 0:
@@ -60,7 +67,7 @@ for i in range(0, len(data)):  # 1 game point
     print(X.shape, L.shape, y.shape)
     model.save_weights('rnn7_weights_rgb.h5')
 
-
+#loading test data
 X, a, y = gs.preprocess_game_data(data[i+1], nt)
 L = []
 for j in range(0, nt):
@@ -69,8 +76,8 @@ for j in range(0, nt):
 L = np.array(L)
 L = np.transpose(L, (1, 0, 2))
 print(X.shape, L.shape, y.shape)
-preds = model.predict([X,L])
-preds = preds + np.load('meanrgb.npy')
+preds = model.predict([X,L]) #predicting next frame based on action and previous frame
+preds = preds + np.load('meanrgb.npy') #adding mean image
 print(preds.shape)
 plt.imsave('X.png', X[0, 0, :, :, :])
 for j in range(0, preds.shape[0]):
