@@ -1,9 +1,9 @@
 
 ## Welcome to the DeepLearning wiki!
 
-This page is maintained by Apoorv Purwar and Shreyas Mundhra and contains -
+This page contains - 
 
-- A deep neural network from scratch - along with several variations of regularizers, activation functions etc.
+- A deep neural network from scratch along with several variations of regularizers, activation functions etc.
 
 - Deep Neural network using CNN
 
